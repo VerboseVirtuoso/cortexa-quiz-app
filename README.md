@@ -91,5 +91,6 @@ manage.py      → Django management file
 
 ## 👨‍💻 Author
 
-Abhi  
+Abhinav Vinod
 Django Web Development Project – 2026
+
