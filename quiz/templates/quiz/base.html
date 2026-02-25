@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cortexa | Premium Learning Platform{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'quiz/css/style.css' %}?v=2.1">
+</head>
+
+<body>
+    <!-- Background Decoration -->
+    <div class="bg-decor">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav>
+        <a href="{% url 'home' %}" class="logo">Cortexa</a>
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="nav-logout-btn">Logout</button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="message-pill {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p id="footer-quote" style="font-size: 1.05rem; font-style: italic; color: var(--text-bright); opacity: 0.9;"></p>
+    </footer>
+
+    <script>
+        const quotes = [
+            "\"Knowledge is power. Information is liberating. Education is the premise of progress.\" - Kofi Annan",
+            "\"Education is not preparation for life; education is life itself.\" - John Dewey",
+            "\"Learning never exhausts the mind.\" - Leonardo da Vinci",
+            "\"The capacity to learn is a gift; the ability to learn is a skill; the willingness to learn is a choice.\" - Brian Herbert",
+            "\"An investment in knowledge pays the best interest.\" - Benjamin Franklin",
+            "\"Develop a passion for learning. If you do, you will never cease to grow.\" - Anthony J. D'Angelo",
+            "\"Education is the most powerful weapon which you can use to change the world.\" - Nelson Mandela",
+            "\"Wisdom is not a product of schooling but of the lifelong attempt to acquire it.\" - Albert Einstein",
+            "\"The expert in anything was once a beginner.\" - Helen Hayes",
+            "\"The beautiful thing about learning is that no one can take it away from you.\" - B.B. King"
+        ];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const footerQuote = document.getElementById("footer-quote");
+            if (footerQuote) {
+                const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+                footerQuote.textContent = randomQuote;
+            }
+        });
+    </script>
+</body>
+
+</html>

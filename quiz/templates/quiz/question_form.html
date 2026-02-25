@@ -1,0 +1,89 @@
+{% extends 'quiz/base.html' %}
+
+{% block title %}Add Question | {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="glass-card" style="max-width: 800px; width: 100%;">
+        <h2 class="auth-title">{% if form.instance.pk %}Update{% else %}Add{% endif %} <span class="gradient-text">Question</span></h2>
+        <p class="auth-subtitle">{% if form.instance.pk %}Edit your challenging question for{% else %}Create a challenging question for{% endif %} "{{ quiz.title }}"</p>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>{{ form.question_text.label }}</label>
+                {{ form.question_text }}
+                {% if form.question_text.errors %}
+                <div class="form-errors">{{ form.question_text.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div style="margin-top: 2.5rem;">
+                <h3 style="margin-bottom: 1.5rem; font-family: 'Outfit', sans-serif; font-size: 1.25rem;">
+                    Configure <span class="gradient-text">Options</span>
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">
+                    Each question must have exactly 4 options. Mark the circle for the correct one.
+                </p>
+
+                {{ options.management_form }}
+
+                {% if options.non_form_errors %}
+                <div class="form-errors" style="margin-bottom: 1rem; text-align: center;">
+                    {{ options.non_form_errors }}
+                </div>
+                {% endif %}
+
+                <div class="quiz-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                    {% for option_form in options %}
+                    <div class="glass-card" style="padding: 1.5rem; background: rgba(255, 255, 255, 0.05);">
+                        <div class="form-group">
+                            <label style="display: flex; justify-content: space-between; align-items: center;">
+                                Option {{ forloop.counter }}
+                                <span
+                                    style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--text-dim);">
+                                    Correct? {{ option_form.is_correct }}
+                                </span>
+                            </label>
+                            {{ option_form.option_text }}
+                            {% if option_form.option_text.errors %}
+                            <div class="form-errors">{{ option_form.option_text.errors }}</div>
+                            {% endif %}
+                            {% for hidden in option_form.hidden_fields %}
+                            {{ hidden }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 3rem; flex-wrap: wrap;">
+                <button type="submit" name="save_and_add" class="btn btn-primary" style="flex: 2; min-width: 200px;">Save and Add Another</button>
+                <button type="submit" name="save_and_finish" class="btn btn-secondary" style="flex: 1; min-width: 150px;">Save and Finish</button>
+                <a href="{% url 'quiz_detail' quiz.pk %}" class="btn btn-secondary" style="flex: 1; min-width: 100px;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .vibrant-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .vibrant-checkbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: var(--primary);
+    }
+
+    /* Target the checkbox within the specific container */
+    input[type="checkbox"] {
+        cursor: pointer;
+    }
+</style>
+{% endblock %}

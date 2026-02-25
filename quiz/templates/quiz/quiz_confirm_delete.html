@@ -1,0 +1,24 @@
+{% extends 'quiz/base.html' %}
+
+{% block title %}Confirm Deletion | Cortexa{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="glass-card auth-card" style="border-color: rgba(239, 68, 68, 0.3);">
+        <h2 class="auth-title">Confirm <span class="gradient-text">Deletion</span></h2>
+        <p class="auth-subtitle" style="color: var(--error);">Warning: This action is permanent.</p>
+
+        <p style="margin-bottom: 2.5rem; color: var(--text-base); line-height: 1.6;">
+            Are you sure you want to delete "<strong>{{ object.title }}</strong>"? All associated questions and attempts
+            will be permanently removed from Cortexa.
+        </p>
+
+        <form method="post" style="display: flex; gap: 1rem;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary" style="background: var(--error); flex: 1;">Permanently
+                Delete</button>
+            <a href="{% url 'quiz_detail' object.pk %}" class="btn btn-secondary" style="flex: 1;">Keep Creation</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

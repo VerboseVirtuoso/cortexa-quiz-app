@@ -1,0 +1,43 @@
+{% extends 'quiz/base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit Studio{% else %}Create New Quiz{% endif %} | Cortexa{% endblock %}
+
+{% block content %}
+<div class="auth-container" style="min-height: calc(100vh - 300px);">
+    <div class="glass-card auth-card" style="max-width: 600px;">
+        <h2 class="auth-title">
+            {% if form.instance.pk %}
+            Edit <span class="gradient-text">Studio</span>
+            {% else %}
+            New <span class="gradient-text">Creation</span>
+            {% endif %}
+        </h2>
+        <p class="auth-subtitle">Configure your quiz details for the Cortexa audience.</p>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="form-errors">
+                    {{ field.errors }}
+                </div>
+                {% endif %}
+                {% if field.help_text %}
+                <small class="form-help">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-primary auth-btn" style="flex: 2; margin-top: 0;">Save
+                    Creation</button>
+                <a href="{% if form.instance.pk %}{% url 'quiz_detail' form.instance.pk %}{% else %}{% url 'home' %}{% endif %}"
+                    class="btn btn-secondary" style="flex: 1;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

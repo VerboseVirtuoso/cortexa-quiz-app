@@ -1,0 +1,108 @@
+{% extends 'quiz/base.html' %}
+
+{% block title %}Start {{ quiz.title }} | Cortexa{% endblock %}
+
+{% block content %}
+<div class="hero" style="text-align: left; padding: 2rem 0;">
+    <div style="max-width: 900px; margin: 0 auto; width: 100%;">
+        <div class="glass-card" style="padding: 3rem;">
+
+            <!-- Quiz Header -->
+            <div
+                style="margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">{{ quiz.title }}</h1>
+                    <p style="color: var(--text-dim); font-size: 1.1rem;">{{ quiz.description }}</p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="badge"
+                        style="background: rgba(126, 34, 206, 0.2); color: var(--primary-light); border: 1px solid var(--primary-light);">
+                        <span id="answered-count">0</span> of {{ quiz.questions.count }} Answered
+                    </span>
+                </div>
+            </div>
+
+            <!-- Quiz Form -->
+            <form method="post" action="{% url 'quiz_submit' quiz.pk %}" id="quiz-form">
+                {% csrf_token %}
+
+                <div style="display: flex; flex-direction: column; gap: 2.5rem;">
+                    {% for question in quiz.questions.all %}
+                    <div class="question-container" data-question-id="{{ question.id }}">
+                        <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--text-bright);">
+                            {{ forloop.counter }}. {{ question.question_text }}
+                        </h3>
+
+                        <div style="display: flex; flex-direction: column; gap: 0.8rem; padding-left: 1rem;">
+                            {% for option in question.options.all %}
+                            <label
+                                style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; color: var(--text-base);">
+                                <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}"
+                                    class="quiz-radio" required style="accent-color: var(--primary);">
+                                <span>{{ option.option_text }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Submit Section -->
+                <div
+                    style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--glass-border); display: flex; justify-content: flex-end;">
+                    <button type="submit" id="submit-btn" class="btn btn-primary"
+                        style="padding: 1rem 2.5rem; font-size: 1.1rem; opacity: 0.5; cursor: not-allowed;" disabled>
+                        Submit Answers
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("quiz-form");
+        const submitBtn = document.getElementById("submit-btn");
+        const answeredCountSpan = document.getElementById("answered-count");
+        const radioButtons = document.querySelectorAll(".quiz-radio");
+
+        const totalQuestions = parseInt("{{ quiz.questions.count|default:0 }}", 10);
+
+        function checkProgress() {
+            const formData = new FormData(form);
+            let answeredQuestions = 0;
+
+            // Count unique keys starting with "question_" in the FormData
+            for (let [key, value] of formData.entries()) {
+                if (key.startsWith("question_")) {
+                    answeredQuestions++;
+                }
+            }
+
+            // Update counter UI
+            answeredCountSpan.textContent = answeredQuestions;
+
+            // Enable submit if all answered
+            if (answeredQuestions >= totalQuestions && totalQuestions > 0) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', checkProgress);
+        });
+
+        // Initial check
+        checkProgress();
+    });
+</script>
+{% endblock %}

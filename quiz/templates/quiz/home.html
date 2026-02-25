@@ -1,0 +1,70 @@
+{% extends 'quiz/base.html' %}
+
+{% block title %}Cortexa - Empower Your Knowledge{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <span class="badge">Elevate Your Learning</span>
+    <h1><span class="gradient-text hero-brand" style="font-size: clamp(4rem, 12vw, 8rem); font-weight: 800; letter-spacing: -4px; text-transform: uppercase;">CORTEXA</span></h1>
+    <h2 style="font-size: 2.2rem; margin-bottom: 2rem; font-weight: 500; color: var(--text-bright);">Master Your <span class="gradient-text">Brilliance</span></h2>
+    <p style="font-size: 1.25rem; color: var(--text-base); max-width: 700px; margin: 0 auto 3rem; font-weight: 400;">
+        The most vibrant and professional quiz platform for creators and learners.
+        Experience glassmorphism design with a seamless quiz flow.
+    </p>
+
+    <div style="display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 5rem;">
+        {% if user.is_authenticated %}
+        <a href="{% url 'quiz_create' %}" class="btn btn-primary">Create New Quiz</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary">Start Learning</a>
+        {% endif %}
+    </div>
+
+    <div class="glass-card" style="text-align: left;">
+        <h2 style="margin-bottom: 2rem; font-size: 2rem; font-family: 'Outfit', sans-serif;">Explore <span
+                class="gradient-text">Quizzes</span></h2>
+
+        <div class="quiz-grid">
+            {% for quiz in quizzes %}
+            <a href="{% url 'quiz_detail' quiz.pk %}" class="quiz-card">
+                <h3>{{ quiz.title }}</h3>
+                <p>{{ quiz.description|truncatewords:20 }}</p>
+                <div class="card-footer">
+                    <span class="take-quiz-link">View Details &rarr;</span>
+                    <span style="font-size: 0.8rem; color: var(--text-dim);">By {{ quiz.created_by.username }}</span>
+                </div>
+            </a>
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 4rem;">
+                <p style="color: var(--text-muted); font-size: 1.1rem;">No active quizzes found. Be the first to create
+                    one!</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+        <div style="margin-top: 3rem; display: flex; justify-content: center; align-items: center; gap: 1rem;">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+                class="btn btn-secondary" style="padding: 0.5rem 1.25rem;">&larr; Previous</a>
+            {% else %}
+            <span class="btn btn-secondary" style="padding: 0.5rem 1.25rem; opacity: 0.5; cursor: not-allowed;">&larr;
+                Previous</span>
+            {% endif %}
+
+            <span style="color: var(--text-bright); font-weight: 600;">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+                class="btn btn-secondary" style="padding: 0.5rem 1.25rem;">Next &rarr;</a>
+            {% else %}
+            <span class="btn btn-secondary" style="padding: 0.5rem 1.25rem; opacity: 0.5; cursor: not-allowed;">Next
+                &rarr;</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

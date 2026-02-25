@@ -1,0 +1,36 @@
+{% extends 'quiz/base.html' %}
+
+{% block title %}Join Cortexa | Create Account{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="glass-card auth-card">
+        <h2 class="auth-title">Join <span class="gradient-text">Cortexa</span></h2>
+        <p class="auth-subtitle">Start your journey today</p>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                <div class="form-errors">
+                    {{ field.errors }}
+                </div>
+                {% endif %}
+                {% if field.help_text %}
+                <small class="form-help">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary auth-btn">Create Account</button>
+        </form>
+
+        <p class="auth-footer">
+            Already have an account? <a href="{% url 'login' %}" class="gradient-text">Login here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

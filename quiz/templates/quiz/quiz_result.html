@@ -1,0 +1,25 @@
+{% extends 'quiz/base.html' %}
+
+{% block title %}Quiz Results | Cortexa{% endblock %}
+
+{% block content %}
+<div class="hero" style="text-align: center; padding: 4rem 0;">
+    <div style="max-width: 800px; margin: 0 auto; width: 100%;">
+        <div class="glass-card" style="padding: 4rem;">
+
+            <h1 style="font-size: 3.5rem; margin-bottom: 1rem; color: var(--text-bright);">Quiz Complete!</h1>
+            <p style="color: var(--text-base); font-size: 1.25rem; margin-bottom: 2rem;">{{ quiz.title }}</p>
+
+            <h2 style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 3.5rem;">
+                Your Score: {{ score }} / {{ quiz.questions.count }}
+            </h2>
+
+            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+                <a href="{% url 'quiz_detail' quiz.pk %}" class="btn btn-primary">Back to Quiz Detail</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
